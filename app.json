@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "proof-42",
+    "name": "Proof 42",
     "slug": "proof-42",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "proof-42",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
