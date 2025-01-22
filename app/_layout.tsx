@@ -15,6 +15,7 @@ const RootLayout = () => {
     "Nunito-Bold": require("../assets/fonts/Nunito-Bold.ttf"),
     "Nunito-Regular": require("../assets/fonts/Nunito-Regular.ttf"),
     "WorkSans-Bold": require("../assets/fonts/WorkSans-Bold.ttf"),
+    "WorkSans-Black": require("../assets/fonts/WorkSans-Black.ttf"),
   });
 
   useEffect(() => {

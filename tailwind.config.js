@@ -35,6 +35,7 @@ module.exports = {
           nbold: ["Nunito-Bold", "sans-serif"],
           nblack: ["Nunito-Black", "sans-serif"],
           wsbold: ["WorkSans-Bold", "sans-serif"],
+          wsblack: ["WorkSans-Black", "sans-serif"],
         },
       },
     },
