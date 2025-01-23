@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, ImageBackground, Image } from 'react-native';
 import MyButton from '../components/button';
+import { router } from "expo-router"
 
 export default function App(){
     return(
@@ -27,7 +28,7 @@ export default function App(){
                 Proof 42
             </Text>
             
-            {/* Summary Text */} 
+            {/* Application Summary Text */} 
             <Text 
                 className="w-3/4 pb-8 text-ivory text-center font-nbold">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
@@ -35,9 +36,18 @@ export default function App(){
             </Text>
 
             {/* Buttons for sign in and sign up. */}
-            <View className="w-3/4 flex-col justify-center"> 
-                <MyButton label="Sign In" />
-                <MyButton label="Create an Account" />
+            <View className="w-3/4 flex-col justify-center pb-6"> 
+                <MyButton 
+                    title="Sign In" 
+                    handlePress={() => router.push("/sign-in")}
+                />
+            </View>
+            
+            <View className="w-3/4 flex-col justify-center">    
+                <MyButton 
+                    title="Create an Account" 
+                    handlePress={() => router.push("/sign-up")}
+                />
             </View>
 
             {/* Let's blend our status bar. */}

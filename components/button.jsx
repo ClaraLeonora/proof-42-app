@@ -1,36 +1,36 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import React from 'react';
 
 // Basic button using React styling. 
-const MyButton = ({ label ='' }) => {
-  return (
-    <View style={styles.container}>
-        <Pressable style={styles.button}>
-            <Text style={styles.text}>
-                {label}
-            </Text>
-        </Pressable>
-    </View>
-  );
-};
+const MyButton = ({ 
+    title, 
+    handlePress,
+    isLoading, 
+}) => {
 
-// Style sheet for basic button. 
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 10, // Adjust this value to reduce the space between buttons
-  },
-  button: {
-    backgroundColor: '#5706F7',
-    padding: 16,
-    borderRadius: 30,
-    paddingHorizontal: 10,
-  },
-  text: {
-    color: '#FEB800',
-    fontFamily: 'Nunito-Black',
-    textAlign: 'center',
-    fontSize: 24
-  },
-});
+  return (
+    <TouchableOpacity 
+        onPress={handlePress} 
+        activeOpacity={0.7}
+        className={`bg-plum rounded-full min-h-[62px] flex flex-row justify-center items-center ${
+            isLoading ? "opacity-50" : ""
+        }`}
+        disabled={isLoading}
+    >
+        <Text className={'text-2xl font-nblack text-amber'}>
+            {title}
+        </Text>
+
+        {isLoading && (
+            <ActivityIndicator
+                animating={isLoading}
+                color="#fff"
+                size="small"
+                className="ml-2"
+            />
+        )}
+    </TouchableOpacity>
+  );
+};;
 
 export default MyButton;
