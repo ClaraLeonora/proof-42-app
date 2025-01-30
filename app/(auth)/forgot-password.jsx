@@ -6,22 +6,34 @@ import { Link, router } from "expo-router"
 import FormField from '../../components/FormField';
 import { useState } from 'react';
 
-export default function SignIn(){
+export default function ForgotPassword(){
     const[form, setForm] = useState({
         email: '',
         password: '',
     })
     
+    const handleSubmit = () => {
+        // Add any form validation or API call here if needed
+        router.push("/sign-in");
+    }
+
     return(
 
         <SafeAreaView className="flex-1 items-center justify-center bg-background"> 
 
-            <View className="w-3/4 top-28">
-
+            {/* Beacon image in top right corner */} 
+            <Image 
+                source={require('../../assets/images/beacon.png')}
+                className="pb-96 absolute left-1 bottom-96 max-w-5xl h-full z-0"
+                resizeMode="s"
+                key="beacon-bottom"
+            />
+            
+            <View className="w-3/4 pb-20 z-10">
                 {/* Title */} 
                 <Text 
                     className=" text-5xl text-ivory font-wsbold">
-                    Sign In
+                    Forgot{"\n"}Password
                 </Text>
                 
                 <View>
@@ -35,37 +47,15 @@ export default function SignIn(){
                         keyboardType="email-address"
                         textColor="text-ivory"
                         backgroundColor="bg-background"
-                        borderColor="border-plum"
-                    />
-
-                    {/* Password input text */}
-                    <FormField
-                        title="Password"
-                        value={form.password}
-                        placeholder="Password"
-                        handleChangeText={(e) => setForm({ ...form, password: e })}
-                        otherStyles="mt-4"
-                        textColor="text-ivory"
-                        backgroundColor="bg-background"
-                        borderColor="border-plum"
+                        borderColor="border-ivory"
                     />
                 </View>
-
-
-                {/* Forgot password link */} 
-                <Link 
-                    className="pt-8"
-                    href={"/forgot-password"}>
-                    <Text className=" pt-8 font-nbold text-base text-rose">
-                        Forgot Password?
-                    </Text>
-                </Link>
 
                 {/* Buttons for sign in and sign up. */}
                 <View className="py-8 flex-col"> 
                     <MyButton 
-                        title="Login" 
-                        handlePress={() => router.push("/home")}
+                        title="Submit" 
+                        handlePress={handleSubmit}
                     />
                 </View>
 
@@ -78,15 +68,14 @@ export default function SignIn(){
 
                 {/* Let's blend our status bar. */}
                 <StatusBar style="auto" />
-            
             </View>
 
-            {/* Cloud image at top of screen */} 
-            <ImageBackground 
-                source={require('../../assets/images/orion-connect.png')}
-                className="absolute w-full h-1/2 top-0"
+            {/* Beacon image in bottom left corner */}
+            <Image 
+                source={require('../../assets/images/beacon.png')}
+                className="pt-96 absolute right-20 top-96 max-w-3xl h-full z-0"
                 resizeMode="cover"
-                key="orion-connect"
+                key="beacon-top"
             />
         </SafeAreaView>        
     );
