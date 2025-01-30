@@ -65,7 +65,7 @@ export default function App() {
                 </View>
 
                 {/* Title */}
-                <Text className="text-5xl text-ivory font-wsblack mb-4">
+                <Text className="text-5xl text-ivory font-wsblack mb-6">
                     Don't Panic!
                 </Text>
 
