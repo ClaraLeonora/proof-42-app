@@ -85,7 +85,7 @@ export default function App() {
                             <View className="w-2/5 py-8">
                                 <HomeButton
                                     title="Let's Go!"
-                                    handlePress={() => router.push("/profile")}
+                                    handlePress={() => router.push("/quiz-panel")}
                                 />
                             </View>
                             <Text className="w-2/5 m-4 text-xl text-ivory font-nbold">
