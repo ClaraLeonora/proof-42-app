@@ -9,6 +9,7 @@ const TabsLayout = () => {
         <Stack.Screen name="home" options={{ headerShown: false }} />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
         <Stack.Screen name="edit-profile" options={{ headerShown: false }} />
+        <Stack.Screen name="quiz-panel" options={{ headerShown: false }} />
       </Stack>
 
       <StatusBar backgroundColor="#5706F7" />
