@@ -45,7 +45,7 @@ export default function App() {
                             <MyButton 
                                 key={i} 
                                 title={`Level ${i + 1} Placeholder`} 
-                                handlePress={() => router.push("/")}
+                                handlePress={() => router.push("/level-up")}
                                 height="50"
                                 className="min-w-[40%] max-w-[45%]"
                                 bgColor="bg-plum"
