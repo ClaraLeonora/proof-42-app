@@ -17,7 +17,7 @@ const QuizLayout = () => {
         <Stack.Screen name="SO-rule-app" options={{ headerShown: false }} />
       </Stack>
 
-      <StatusBar backgroundColor="#5706F7" />
+      <StatusBar style="light" backgroundColor="#5706F7" />
     </>
   );
 };
