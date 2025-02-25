@@ -1,27 +1,39 @@
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, ImageBackground, Image } from 'react-native';
 import MyButton from '../../components/button';
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link, router } from "expo-router"
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link, router } from "expo-router";
 import FormField from '../../components/FormField';
 import { useState } from 'react';
+import { supabase } from '../../lib/supabase';
 
-export default function ForgotPassword(){
-    const[form, setForm] = useState({
+export default function ForgotPassword() {
+    const [form, setForm] = useState({
         email: '',
-        password: '',
-    })
-    
-    const handleSubmit = () => {
-        // Add any form validation or API call here if needed
-        router.push("/sign-in");
-    }
+    });
+    const [message, setMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
-    return(
+    const handleSubmit = async () => {
+        const { email } = form;
 
+        // Reset the error and message state
+        setMessage('');
+        setErrorMessage('');
+
+        // Send reset password email
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        if (error) {
+            setErrorMessage(error.message);
+        } else {
+            setMessage('Password reset link sent! Check your email.');
+            // Optionally, redirect to sign-in or another page
+            // router.push("/sign-in");
+        }
+    };
+
+    return (
         <SafeAreaView className="flex-1 items-center justify-center bg-background"> 
-
-            {/* Beacon image in top right corner */} 
             <Image 
                 source={require('../../assets/images/beacon.png')}
                 className="pb-96 absolute left-1 bottom-96 max-w-5xl h-full z-0"
@@ -30,14 +42,11 @@ export default function ForgotPassword(){
             />
             
             <View className="w-3/4 pb-20 z-10">
-                {/* Title */} 
-                <Text 
-                    className=" text-5xl text-ivory font-wsbold">
+                <Text className="text-5xl text-ivory font-wsbold">
                     Forgot{"\n"}Password
                 </Text>
                 
                 <View>
-                    {/* Email input text */} 
                     <FormField
                         title="Email"
                         value={form.email}
@@ -51,26 +60,25 @@ export default function ForgotPassword(){
                     />
                 </View>
 
-                {/* Buttons for sign in and sign up. */}
+                {errorMessage ? <Text className="text-red-500 mt-2">{errorMessage}</Text> : null}
+                {message ? <Text className="text-green-500 mt-2">{message}</Text> : null}
+
                 <View className="py-8 flex-col"> 
                     <MyButton 
-                        title="Submit" 
+                        title="Send Link" 
                         handlePress={handleSubmit}
                     />
                 </View>
 
-                {/* Back to landing page */} 
                 <Link href={"/"}>
                     <Text className="font-nbold text-base text-amber">
                         Back to Earth
                     </Text>
                 </Link>
 
-                {/* Let's blend our status bar. */}
                 <StatusBar style="auto" />
             </View>
 
-            {/* Beacon image in bottom left corner */}
             <Image 
                 source={require('../../assets/images/beacon.png')}
                 className="pt-96 absolute right-20 top-96 max-w-3xl h-full z-0"

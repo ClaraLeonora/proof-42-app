@@ -1,31 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import { Text, View, ImageBackground, Image } from 'react-native';
-import MyButton from '../../components/button';
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link, router } from "expo-router"
-import FormField from '../../components/FormField';
 import { useState } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { Text, View, ImageBackground } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link, router } from 'expo-router';
+import FormField from '../../components/FormField';
+import MyButton from '../../components/button';
+import { supabase } from '../../lib/supabase';
 
-export default function SignIn(){
-    const[form, setForm] = useState({
-        email: '',
-        password: '',
-    })
-    
-    return(
+export default function SignIn() {
+    const [form, setForm] = useState({ email: '', password: '' });
+    const [errorMessage, setErrorMessage] = useState('');
 
-        <SafeAreaView className="flex-1 items-center justify-center bg-background"> 
+    const handleLogin = async () => {
+        const { email, password } = form;
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
 
+        if (error) {
+            setErrorMessage(error.message);
+        } else {
+            router.push('/home'); // Redirect to home page
+        }
+    };
+
+    return (
+        <SafeAreaView className="flex-1 items-center justify-center bg-background">
             <View className="w-3/4 top-28">
+                <Text className="text-5xl text-ivory font-wsbold">Sign In</Text>
 
-                {/* Title */} 
-                <Text 
-                    className=" text-5xl text-ivory font-wsbold">
-                    Sign In
-                </Text>
-                
                 <View>
-                    {/* Email input text */} 
                     <FormField
                         title="Email"
                         value={form.email}
@@ -38,7 +40,6 @@ export default function SignIn(){
                         borderColor="border-plum"
                     />
 
-                    {/* Password input text */}
                     <FormField
                         title="Password"
                         value={form.password}
@@ -51,43 +52,29 @@ export default function SignIn(){
                     />
                 </View>
 
+                {errorMessage ? <Text className="text-red-500 mt-2">{errorMessage}</Text> : null}
 
-                {/* Forgot password link */} 
-                <Link 
-                    className="pt-8"
-                    href={"/forgot-password"}>
-                    <Text className=" pt-8 font-nbold text-base text-rose">
-                        Forgot Password?
-                    </Text>
+                <Link className="pt-8" href="/forgot-password">
+                    <Text className="pt-8 font-nbold text-base text-rose">Forgot Password?</Text>
                 </Link>
 
-                {/* Buttons for sign in and sign up. */}
-                <View className="py-8 flex-col"> 
-                    <MyButton 
-                        title="Login" 
-                        handlePress={() => router.push("/home")}
-                    />
+                <View className="py-8 flex-col">
+                    <MyButton title="Login" handlePress={handleLogin} />
                 </View>
 
-                {/* Back to landing page */} 
-                <Link href={"/"}>
-                    <Text className="font-nbold text-base text-amber">
-                        Back to Earth
-                    </Text>
+                <Link href="/">
+                    <Text className="font-nbold text-base text-amber">Back to Earth</Text>
                 </Link>
 
-                {/* Let's blend our status bar. */}
                 <StatusBar style="auto" />
-            
             </View>
 
-            {/* Cloud image at top of screen */} 
-            <ImageBackground 
+            <ImageBackground
                 source={require('../../assets/images/orion-connect.png')}
                 className="absolute w-full h-1/2 top-0"
                 resizeMode="cover"
                 key="orion-connect"
             />
-        </SafeAreaView>        
+        </SafeAreaView>
     );
 }

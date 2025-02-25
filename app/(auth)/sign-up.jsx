@@ -1,23 +1,36 @@
+import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, ImageBackground, ScrollView } from 'react-native';
-import MyButton from '../../components/button';
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link, router } from "expo-router"
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link, router } from 'expo-router';
 import FormField from '../../components/FormField';
-import { useState } from 'react';
+import MyButton from '../../components/button';
+import { supabase } from '../../lib/supabase';
 
-export default function SignUp(){
-    const[form, setForm] = useState({
-        email: '',
-        password: '',
-        confirmPassword: '',
-    })
-    
-    return(
-        <SafeAreaView className="flex-1 bg-background"> 
+export default function SignUp() {
+    const [form, setForm] = useState({ email: '', password: '', confirmPassword: '' });
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const handleSignUp = async () => {
+        if (form.password !== form.confirmPassword) {
+            setErrorMessage('Passwords do not match.');
+            return;
+        }
+
+        const { email, password } = form;
+        const { error } = await supabase.auth.signUp({ email, password });
+
+        if (error) {
+            setErrorMessage(error.message);
+        } else {
+            router.push('/home'); // Redirect to home page after successful sign-up
+        }
+    };
+
+    return (
+        <SafeAreaView className="flex-1 bg-background">
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
-                {/* Cloud image at top of screen */} 
-                <ImageBackground 
+                <ImageBackground
                     source={require('../../assets/images/orion-disconnect.png')}
                     className="absolute w-full h-1/3 top-0"
                     resizeMode="cover"
@@ -25,13 +38,9 @@ export default function SignUp(){
                 />
 
                 <View className="w-3/4 mt-40">
-                    {/* Title */} 
-                    <Text className="text-4xl text-ivory font-wsbold">
-                        Sign Up
-                    </Text>
-                    
+                    <Text className="text-4xl text-ivory font-wsbold">Sign Up</Text>
+
                     <View>
-                        {/* Email input text */} 
                         <FormField
                             title="Email"
                             value={form.email}
@@ -44,7 +53,6 @@ export default function SignUp(){
                             borderColor="border-plum"
                         />
 
-                        {/* Password input text */}
                         <FormField
                             title="Password"
                             value={form.password}
@@ -56,11 +64,10 @@ export default function SignUp(){
                             borderColor="border-plum"
                         />
 
-                        {/* Confirm Password input text */}
                         <FormField
                             title="Confirm Password"
                             value={form.confirmPassword}
-                            placeholder="Password"
+                            placeholder="Confirm Password"
                             handleChangeText={(e) => setForm({ ...form, confirmPassword: e })}
                             otherStyles="mt-4"
                             textColor="text-ivory"
@@ -70,27 +77,19 @@ export default function SignUp(){
                         />
                     </View>
 
-                    {/* Buttons for sign in and sign up. */}
-                    <View className="pt-8 flex-col"> 
-                        <MyButton 
-                            title="Login" 
-                            handlePress={() => router.push("/home")}
-                        />
+                    {errorMessage ? <Text className="text-red-500 mt-2">{errorMessage}</Text> : null}
+
+                    <View className="pt-8 flex-col">
+                        <MyButton title="Sign Up" handlePress={handleSignUp} />
                     </View>
 
-                    {/* Back to landing page */} 
-                    <Link 
-                        href={"/"}
-                        className="pt-8">
-                        <Text className="font-nbold text-base text-amber">
-                            Back to Earth
-                        </Text>
+                    <Link href="/" className="pt-8">
+                        <Text className="font-nbold text-base text-amber">Back to Earth</Text>
                     </Link>
 
-                    {/* Let's blend our status bar. */}
                     <StatusBar style="auto" />
                 </View>
             </ScrollView>
-        </SafeAreaView>        
+        </SafeAreaView>
     );
 }
