@@ -18,7 +18,7 @@ export default function SignIn() {
         if (error) {
             setErrorMessage(error.message);
         } else {
-            router.push('/home'); // Redirect to home page
+            router.push('home'); // Redirect to home page
         }
     };
 
