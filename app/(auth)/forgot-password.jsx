@@ -65,7 +65,8 @@ export default function ForgotPassword() {
 
                 <View className="py-8 flex-col"> 
                     <MyButton 
-                        title="Send Link" 
+                        title="Send Link"
+                        borderColor="border-plum" 
                         handlePress={handleSubmit}
                     />
                 </View>

@@ -16,15 +16,31 @@ export default function SignUp() {
             setErrorMessage('Passwords do not match.');
             return;
         }
-
+    
+        // Sign up the user with supabase auth. 
         const { email, password } = form;
-        const { error } = await supabase.auth.signUp({ email, password });
-
-        if (error) {
-            setErrorMessage(error.message);
-        } else {
-            router.push('/home'); // Redirect to home page after successful sign-up
+        const { error: signUpError } = await supabase.auth.signUp({ email, password });
+    
+        // Check for sign up error. 
+        if (signUpError) {
+            setErrorMessage(signUpError.message);
+            return;
         }
+    
+        // Insert the user email into the 'users' table
+        const { error: insertError } = await supabase.from("Users").insert([{ email }]);
+    
+        // Check for supabase table insert error. 
+        if (insertError) {
+            setErrorMessage(insertError.message);
+            return;
+        }
+
+        console.error("Sign-up Error:", signUpError);
+        console.error("Insert Error:", insertError);
+    
+        // Redirect to home page after successful sign-up
+        router.push('/sign-in');
     };
 
     return (

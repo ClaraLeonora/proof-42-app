@@ -30,7 +30,7 @@ export default function App() {
                 <View className="mt-[70%] sm:mt-[70%] w-full flex-row justify-center">
                     <MyButton 
                         title="Resume" 
-                        handlePress={() => router.push("/")}
+                        handlePress={() => router.push("/simple-rule")}
                         height="50"
                         width="40%"
                         bgColor="bg-indigo "
@@ -48,7 +48,7 @@ export default function App() {
                                 handlePress={() => router.push("/level-up")}
                                 height="50"
                                 className="min-w-[40%] max-w-[45%]"
-                                bgColor="bg-plum"
+                                borderColor="border-plum"
                                 textColor="text-amber"
                             />
                         ))}
