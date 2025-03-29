@@ -11,6 +11,8 @@ export default function SimpleRule() {
     useEffect(() => {
         const fetchQuestionData = async () => {
             try {
+                console.log('Fetching Level ID...');
+                
                 // Fetch level 1 UUID from Levels table
                 const { data: levelData, error: levelError } = await supabase
                     .from('Levels')
@@ -20,7 +22,9 @@ export default function SimpleRule() {
 
                 if (levelError) throw levelError;
                 const levelId = levelData.id;
+                console.log('Level ID:', levelId);
 
+                console.log('Fetching Question...');
                 // Fetch Question from Questions table
                 const { data: questionData, error: questionError } = await supabase
                     .from('Questions')
@@ -30,23 +34,13 @@ export default function SimpleRule() {
 
                 if (questionError) throw questionError;
 
+                console.log('Question Data:', questionData);
                 setQuestionText(questionData.question_text);
 
-                // Debugging: Log all question_id values in Question_Options table
-                const { data: allOptionsData, error: allOptionsError } = await supabase
-                    .from('Question_Options')
-                    .select('question_id, option_text');
-
-                if (allOptionsError) {
-                    console.error('Error fetching all options data:', allOptionsError);
-                } else {
-                    console.log('All options data:', allOptionsData);
-                }
-
-                // Debugging: Fetch all rows from Question_Options table
+                // Debug: Log all rows in Question_Options
                 const { data: allRows, error: allRowsError } = await supabase
                     .from('Question_Options')
-                    .select('*'); // Fetch all columns
+                    .select('*');
 
                 if (allRowsError) {
                     console.error('Error fetching all rows from Question_Options:', allRowsError);
@@ -54,17 +48,7 @@ export default function SimpleRule() {
                     console.log('All rows in Question_Options table:', allRows);
                 }
 
-                // Debugging: Check if RLS might be affecting the query
-                const { data: testData, error: testError } = await supabase
-                    .from('Question_Options')
-                    .select('*');
-
-                if (testError) {
-                    console.error('Error fetching test data (RLS might be enabled):', testError);
-                } else {
-                    console.log('Test data fetched (RLS check):', testData);
-                }
-
+                console.log('Fetching Options for Question ID:', questionData.id);
                 // Fetch the Answer Choices from Question_Options table
                 const { data: optionsData, error: optionsError } = await supabase
                     .from('Question_Options') 
@@ -73,9 +57,7 @@ export default function SimpleRule() {
 
                 if (optionsError) throw optionsError;
 
-                console.log('Fetched options data:', optionsData); 
-                console.log('Expected Question ID:', questionData.id);
-                console.log('Question Data:', questionData);
+                console.log('Fetched options data:', JSON.stringify(optionsData, null, 2)); 
 
                 if (optionsData && optionsData.length > 0) {
                     setOptions(optionsData.map(option => option.option_text)); // Extract option_text values
@@ -91,6 +73,10 @@ export default function SimpleRule() {
 
         fetchQuestionData();
     }, []);
+
+    useEffect(() => {
+        console.log('Updated Options:', options);
+    }, [options]);
 
     const handlePrevious = () => {
         console.log('Previous button pressed');
@@ -111,9 +97,17 @@ export default function SimpleRule() {
 
                 {/* Display question options */}
                 {options.map((option, index) => (
-                    <Text key={index} className="text-lg bg-ivory p-3 rounded-xl text-center mb-2">
-                        {option}
-                    </Text>
+                    <MyButton 
+                        key={index}
+                        title={option}
+                        handlePress={handlePrevious}
+                        height={50}
+                        width="100%"
+                        bgColor="bg-ivory"
+                        textColor="text-background"
+                        borderColor="border-ivory"
+                        borderWidth={1}
+                    />  
                 ))}
             </View>
 
