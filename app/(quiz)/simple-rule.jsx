@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, SafeAreaView } from 'react-native';
+import { Text, View, SafeAreaView, Image, ImageBackground } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import MyButton from '../../components/button';
 
@@ -89,25 +89,35 @@ export default function SimpleRule() {
     return (
         <SafeAreaView className="flex-1 items-center justify-center bg-plum">
             <StatusBar style="auto" />
-            <View className="w-3/4 mt-5">
+            <Image
+                source={require('../../assets/images/quiz_questions/mp-simplerule.png')}
+                className="absolute w-3/4 bottom-1/2"
+                resizeMode="contain"
+                key="mp-simplerule"
+            ></Image>
+
+            <View className="w-3/4 mt-60">
+
                 {/* Display the fetched question text */}
-                <Text className="text-2xl font-bold bg-indigo p-4 rounded-2xl mb-5 text-center text-ivory">
+                <Text className="text-2xl font-bold bg-indigo p-4 rounded-2xl mb-3 text-center text-ivory">
                     {questionText}
                 </Text>
 
                 {/* Display question options */}
                 {options.map((option, index) => (
-                    <MyButton 
-                        key={index}
-                        title={option}
-                        handlePress={handlePrevious}
-                        height={50}
-                        width="100%"
-                        bgColor="bg-ivory"
-                        textColor="text-background"
-                        borderColor="border-ivory"
-                        borderWidth={1}
-                    />  
+                    <View className = "mb-4">
+                        <MyButton
+                            key={index}
+                            title={option}
+                            handlePress={handlePrevious}
+                            height={50}
+                            width="100%"
+                            bgColor="bg-ivory"
+                            textColor="text-background"
+                            borderColor="border-ivory"
+                            borderWidth={1}
+                        /> 
+                    </View> 
                 ))}
             </View>
 
