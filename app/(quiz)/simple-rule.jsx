@@ -90,19 +90,34 @@ export default function SimpleRule() {
     return (
         <SafeAreaView className="flex-1 items-center justify-center bg-violet">
             <StatusBar style="auto" />
-            <Image
-                source={require('../../assets/images/quiz_questions/mp-simplerule.png')}
-                className="absolute w-3/4 bottom-1/2"
-                resizeMode="contain"
-                key="mp-simplerule"
-            ></Image>
 
-            <View className="w-3/4 mt-60">
+            {/* Display the fetched question text */}
+            <Text className="text-3xl font-bold bg-violet rounded-xl p-2 text-center text-ivory">
+                Level 1
+            </Text>
 
-                {/* Display the fetched question text */}
-                <Text className="text-2xl font-bold bg-plum p-4 rounded-2xl mb-3 text-center text-ivory">
-                    {questionText}
+            <View className="flex-row">
+                <Text className="text-sm font-bold bg-amber rounded-full mb-3 text-center text-amber">
+                    This is a placeholder fix this
                 </Text>
+                <Text className="text-sm font-bold bg-plum rounded-full mb-3 text-center text-plum">
+                    This is a placeholder fix this
+                </Text>
+            </View>
+
+            {/* Display the fetched question text */}
+            <Text className="text-2xl font-bold bg-plum rounded-xl p-2 mb-3 text-center text-ivory">
+                {questionText}
+            </Text>
+
+
+            <View className="w-3/4 mt-56">
+                <Image
+                    source={require('../../assets/images/quiz_questions/mp-simplerule.png')}
+                    className="absolute w-full bottom-1/2 mb-16"
+                    resizeMode="contain"
+                    key="mp-simplerule"
+                ></Image>
 
                 {/* Display question options */}
                 {options.map((option, index) => (
@@ -111,7 +126,7 @@ export default function SimpleRule() {
                             key={index}
                             title={option}
                             handlePress={handlePrevious}
-                            height={50}
+                            height={40}
                             width="100%"
                             bgColor="bg-ivory"
                             textColor="text-background"
