@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, SafeAreaView, Image, ImageBackground } from 'react-native';
+import { Text, View, SafeAreaView, Image } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import MyButton from '../../components/button';
+import OptionButton from '../../components/OptionButton';
 
 export default function SimpleRule() {
     const [questionText, setQuestionText] = useState(''); // Store the question text
@@ -87,7 +88,7 @@ export default function SimpleRule() {
     };
 
     return (
-        <SafeAreaView className="flex-1 items-center justify-center bg-plum">
+        <SafeAreaView className="flex-1 items-center justify-center bg-violet">
             <StatusBar style="auto" />
             <Image
                 source={require('../../assets/images/quiz_questions/mp-simplerule.png')}
@@ -99,14 +100,14 @@ export default function SimpleRule() {
             <View className="w-3/4 mt-60">
 
                 {/* Display the fetched question text */}
-                <Text className="text-2xl font-bold bg-indigo p-4 rounded-2xl mb-3 text-center text-ivory">
+                <Text className="text-2xl font-bold bg-plum p-4 rounded-2xl mb-3 text-center text-ivory">
                     {questionText}
                 </Text>
 
                 {/* Display question options */}
                 {options.map((option, index) => (
                     <View className = "mb-4">
-                        <MyButton
+                        <OptionButton
                             key={index}
                             title={option}
                             handlePress={handlePrevious}
@@ -128,7 +129,7 @@ export default function SimpleRule() {
                     handlePress={handlePrevious}
                     height={50}
                     width="45%"
-                    bgColor="bg-plum"
+                    bgColor="bg-violet"
                     textColor="text-ivory"
                     borderColor="border-ivory"
                     borderWidth={1}
@@ -139,7 +140,7 @@ export default function SimpleRule() {
                     handlePress={handleNext}
                     height={50}
                     width="45%"
-                    bgColor="bg-indigo"
+                    bgColor="bg-plum"
                     textColor="text-amber"
                     borderColor="border-plum"
                     borderWidth={1}
