@@ -6,15 +6,15 @@ import MyButton from '../../components/button';
 import OptionButton from '../../components/OptionButton';
 
 export default function SimpleRule() {
-    const [questionText, setQuestionText] = useState(''); // Store the question text
-    const [options, setOptions] = useState([]); // Store the question options
+    const [questionText, setQuestionText] = useState('');
+    const [options, setOptions] = useState([]);
+    const [imageUrl, setImageUrl] = useState(null); // Store the image URL
 
     useEffect(() => {
         const fetchQuestionData = async () => {
             try {
                 console.log('Fetching Level ID...');
                 
-                // Fetch level 1 UUID from Levels table
                 const { data: levelData, error: levelError } = await supabase
                     .from('Levels')
                     .select('id')
@@ -26,10 +26,9 @@ export default function SimpleRule() {
                 console.log('Level ID:', levelId);
 
                 console.log('Fetching Question...');
-                // Fetch Question from Questions table
                 const { data: questionData, error: questionError } = await supabase
                     .from('Questions')
-                    .select('id, question_text') 
+                    .select('id, question_text, image_url') // Fetch image_url
                     .eq('level_id', levelId)
                     .single();
 
@@ -37,20 +36,9 @@ export default function SimpleRule() {
 
                 console.log('Question Data:', questionData);
                 setQuestionText(questionData.question_text);
-
-                // Debug: Log all rows in Question_Options
-                const { data: allRows, error: allRowsError } = await supabase
-                    .from('Question_Options')
-                    .select('*');
-
-                if (allRowsError) {
-                    console.error('Error fetching all rows from Question_Options:', allRowsError);
-                } else {
-                    console.log('All rows in Question_Options table:', allRows);
-                }
+                setImageUrl(questionData.image_url); // Set image URL
 
                 console.log('Fetching Options for Question ID:', questionData.id);
-                // Fetch the Answer Choices from Question_Options table
                 const { data: optionsData, error: optionsError } = await supabase
                     .from('Question_Options') 
                     .select('option_text') 
@@ -60,12 +48,7 @@ export default function SimpleRule() {
 
                 console.log('Fetched options data:', JSON.stringify(optionsData, null, 2)); 
 
-                if (optionsData && optionsData.length > 0) {
-                    setOptions(optionsData.map(option => option.option_text)); // Extract option_text values
-                } else {
-                    console.warn('No options found for the question.');
-                    setOptions(['No options available']); 
-                }
+                setOptions(optionsData.length > 0 ? optionsData.map(option => option.option_text) : ['No options available']);
 
             } catch (error) {
                 console.error('Error fetching question data:', error);
@@ -75,57 +58,39 @@ export default function SimpleRule() {
         fetchQuestionData();
     }, []);
 
+    // Log the image URL when it is set
     useEffect(() => {
-        console.log('Updated Options:', options);
-    }, [options]);
-
-    const handlePrevious = () => {
-        console.log('Previous button pressed');
-    };
-
-    const handleNext = () => {
-        console.log('Next button pressed');
-    };
+        console.log('Updated Image URL:', imageUrl);
+    }, [imageUrl]);
 
     return (
         <SafeAreaView className="flex-1 items-center justify-center bg-violet">
             <StatusBar style="auto" />
 
-            {/* Display the fetched question text */}
             <Text className="text-3xl font-bold bg-violet rounded-xl p-2 text-center text-ivory">
                 Level 1
             </Text>
 
-            <View className="flex-row">
-                <Text className="text-sm font-bold bg-amber rounded-full mb-3 text-center text-amber">
-                    This is a placeholder fix this
-                </Text>
-                <Text className="text-sm font-bold bg-plum rounded-full mb-3 text-center text-plum">
-                    This is a placeholder fix this
-                </Text>
-            </View>
-
-            {/* Display the fetched question text */}
             <Text className="text-2xl font-bold bg-plum rounded-xl p-2 mb-3 text-center text-ivory">
                 {questionText}
             </Text>
 
-
             <View className="w-3/4 mt-56">
-                <Image
-                    source={require('../../assets/images/quiz_questions/mp-simplerule.png')}
-                    className="absolute w-full bottom-1/2 mb-16"
-                    resizeMode="contain"
-                    key="mp-simplerule"
-                ></Image>
+            {imageUrl ? (
+            <Image
+                source={{ uri: imageUrl }} 
+                className="w-full h-3/4"
+                resizeMode="contain"
+                />
+            ) : (
+                <Text className="text-center text-sm text-gray-500">No image available</Text>
+            )}
 
-                {/* Display question options */}
                 {options.map((option, index) => (
-                    <View className = "mb-4">
+                    <View key={index} className="mb-4">
                         <OptionButton
-                            key={index}
                             title={option}
-                            handlePress={handlePrevious}
+                            handlePress={() => console.log(`Selected: ${option}`)}
                             height={40}
                             width="100%"
                             bgColor="bg-ivory"
@@ -137,11 +102,10 @@ export default function SimpleRule() {
                 ))}
             </View>
 
-            {/* Navigation Buttons */}
             <View className="flex-row justify-between w-3/4">
                 <MyButton 
                     title="Previous" 
-                    handlePress={handlePrevious}
+                    handlePress={() => console.log('Previous button pressed')}
                     height={50}
                     width="45%"
                     bgColor="bg-violet"
@@ -152,7 +116,7 @@ export default function SimpleRule() {
 
                 <MyButton 
                     title="Next" 
-                    handlePress={handleNext}
+                    handlePress={() => console.log('Next button pressed')}
                     height={50}
                     width="45%"
                     bgColor="bg-plum"
