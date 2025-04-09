@@ -1,15 +1,15 @@
-import { Stack, Redirect, Tabs } from "expo-router";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
 const TabsLayout = () => {
 
   return (
     <>
-      <Stack>
-        <Stack.Screen name="home" options={{ headerShown: false }} />
-        <Stack.Screen name="profile" options={{ headerShown: false }} />
-        <Stack.Screen name="edit-profile" options={{ headerShown: false }} />
-        <Stack.Screen name="quiz-panel" options={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="home"/>
+        <Stack.Screen name="profile"/>
+        <Stack.Screen name="edit-profile"/>
+        <Stack.Screen name="quiz-panel"/>
       </Stack>
 
       <StatusBar backgroundColor="#5706F7" />
