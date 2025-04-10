@@ -11,25 +11,41 @@ export default function SimpleRule() {
     const [options, setOptions] = useState([]);
     const [imageUrl, setImageUrl] = useState(null);
 
-    // States to store options selected, correct option, and answered status
     const [selectedOption, setSelectedOption] = useState(null);
     const [correctOption, setCorrectOption] = useState(null);
-    const [isAnswered, setIsAnswered] = useState(false);  // Track if the correct answer is selected
-    const [clickedOptions, setClickedOptions] = useState([]); // Track clicked options (wrong ones)
+    const [isAnswered, setIsAnswered] = useState(false);
+    const [clickedOptions, setClickedOptions] = useState([]);
+
+    const [questionId, setQuestionId] = useState(null);
+    const [levelId, setLevelId] = useState(null);
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
         fetchQuestionData();
+        fetchUserId();
     }, []);
+
+    const fetchUserId = async () => {
+        const { data, error } = await supabase.auth.getUser();
+        if (error || !data?.user) {
+            console.error("Failed to get user ID", error);
+        } else {
+            setUserId(data.user.id);
+        }
+    };
 
     const fetchQuestionData = async () => {
         try {
             const levelId = await fetchLevelId(1);
+            setLevelId(levelId);
+
             const questionData = await fetchQuestion(levelId);
             setQuestionText(questionData.question_text);
             setImageUrl(questionData.image_url);
+            setQuestionId(questionData.id);
+
             const optionsData = await fetchOptions(questionData.id);
-            setOptions(optionsData.length > 0 ? optionsData.map(option => option.option_text) : ['No options available']);
-            // Fetch correct option
+            setOptions(optionsData.map(option => option.option_text));
             const correct = optionsData.find(option => option.is_correct);
             setCorrectOption(correct);
         } catch (error) {
@@ -66,14 +82,47 @@ export default function SimpleRule() {
         return data;
     };
 
-    // Handles the option selection and checks if the selected option is correct
-    const handleOptionSelect = (option) => {
+    const handleOptionSelect = async (option) => {
         if (!isAnswered) {
             setSelectedOption(option);
-            if (option === correctOption.option_text) {
-                setIsAnswered(true); // Mark as answered correctly
+            const isCorrect = option === correctOption.option_text;
+
+            if (isCorrect) {
+                setIsAnswered(true);
             } else {
-                setClickedOptions((prev) => [...prev, option]); // Track wrong options
+                setClickedOptions((prev) => [...prev, option]);
+            }
+
+            // Save performance to Supabase
+            if (userId && questionId && levelId) {
+                try {
+                    // Check if the user has already answered this question
+                    const { data: existingAnswer, error: checkError } = await supabase
+                        .from('User_Answers')
+                        .select('id')
+                        .eq('user_id', userId)
+                        .eq('question_id', questionId)
+                        .single();
+
+                    if (checkError && checkError.code !== 'PGRST116') throw checkError;
+
+                    // If no previous answer, insert a new one
+                    if (!existingAnswer) {
+                        const { error: insertError } = await supabase.from('User_Answers').insert({
+                            user_id: userId,
+                            question_id: questionId,
+                            level_id: levelId,
+                            incorrect_choice: isCorrect ? null : option,
+                            is_correct: isCorrect,
+                        });
+
+                        if (insertError) {
+                            console.error('Insert failed:', insertError.message);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error handling user answer:', error);
+                }
             }
         }
     };
@@ -133,7 +182,6 @@ const QuestionSection = ({ questionText, imageUrl, options, selectedOption, corr
 );
 
 const OptionButtonWrapper = ({ option, selectedOption, correctOption, isAnswered, clickedOptions, handleOptionSelect }) => {
-    // Determine button state based on selection status
     const isButtonDisabled = (isAnswered && option !== correctOption.option_text) || clickedOptions.includes(option);
 
     return (
@@ -143,7 +191,6 @@ const OptionButtonWrapper = ({ option, selectedOption, correctOption, isAnswered
                 handlePress={() => handleOptionSelect(option)}
                 height={40}
                 width="100%"
-                // Change button color based on correctness
                 bgColor={
                     option === selectedOption
                         ? (option === correctOption.option_text ? "bg-amber" : "bg-rose") 
@@ -152,7 +199,6 @@ const OptionButtonWrapper = ({ option, selectedOption, correctOption, isAnswered
                 textColor="text-background"
                 borderColor="border-ivory"
                 borderWidth={1}
-                // Disable button based on conditions
                 disabled={isButtonDisabled}
             />
         </View>
