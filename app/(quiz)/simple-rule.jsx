@@ -11,6 +11,12 @@ export default function SimpleRule() {
     const [options, setOptions] = useState([]);
     const [imageUrl, setImageUrl] = useState(null);
 
+    // States to store options selected, correct option, and answered status
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [correctOption, setCorrectOption] = useState(null);
+    const [isAnswered, setIsAnswered] = useState(false);  // Track if the correct answer is selected
+    const [clickedOptions, setClickedOptions] = useState([]); // Track clicked options (wrong ones)
+
     useEffect(() => {
         fetchQuestionData();
     }, []);
@@ -23,6 +29,9 @@ export default function SimpleRule() {
             setImageUrl(questionData.image_url);
             const optionsData = await fetchOptions(questionData.id);
             setOptions(optionsData.length > 0 ? optionsData.map(option => option.option_text) : ['No options available']);
+            // Fetch correct option
+            const correct = optionsData.find(option => option.is_correct);
+            setCorrectOption(correct);
         } catch (error) {
             console.error('Error fetching question data:', error);
         }
@@ -51,17 +60,38 @@ export default function SimpleRule() {
     const fetchOptions = async (questionId) => {
         const { data, error } = await supabase
             .from('Question_Options')
-            .select('option_text')
+            .select('option_text, is_correct')
             .eq('question_id', questionId);
         if (error) throw error;
         return data;
+    };
+
+    // Handles the option selection and checks if the selected option is correct
+    const handleOptionSelect = (option) => {
+        if (!isAnswered) {
+            setSelectedOption(option);
+            if (option === correctOption.option_text) {
+                setIsAnswered(true); // Mark as answered correctly
+            } else {
+                setClickedOptions((prev) => [...prev, option]); // Track wrong options
+            }
+        }
     };
 
     return (
         <SafeAreaView className="flex-1 items-center justify-start bg-violet">
             <StatusBar style="auto" />
             <Header title="Level 1" />
-            <QuestionSection questionText={questionText} imageUrl={imageUrl} options={options} />
+            <QuestionSection 
+                questionText={questionText} 
+                imageUrl={imageUrl} 
+                options={options} 
+                selectedOption={selectedOption} 
+                correctOption={correctOption}
+                isAnswered={isAnswered}
+                clickedOptions={clickedOptions}
+                handleOptionSelect={handleOptionSelect}
+            />
             <NavigationButtons />
         </SafeAreaView>
     );
@@ -73,7 +103,7 @@ const Header = ({ title }) => (
     </Text>
 );
 
-const QuestionSection = ({ questionText, imageUrl, options }) => (
+const QuestionSection = ({ questionText, imageUrl, options, selectedOption, correctOption, isAnswered, clickedOptions, handleOptionSelect }) => (
     <View className="w-3/4">
         <Text className="text-2xl font-bold bg-plum rounded-xl p-2 mb-3 text-center text-ivory">
             {questionText}
@@ -89,25 +119,45 @@ const QuestionSection = ({ questionText, imageUrl, options }) => (
             <Text className="text-center text-sm text-gray-500">Error: No image available</Text>
         )}
         {options.map((option, index) => (
-            <OptionButtonWrapper key={index} option={option} />
+            <OptionButtonWrapper 
+                key={index} 
+                option={option}
+                selectedOption={selectedOption}
+                correctOption={correctOption}
+                isAnswered={isAnswered}
+                clickedOptions={clickedOptions}
+                handleOptionSelect={handleOptionSelect}
+            />
         ))}
     </View>
 );
 
-const OptionButtonWrapper = ({ option }) => (
-    <View className="mb-4">
-        <OptionButton
-            title={option}
-            handlePress={() => console.log(`Selected: ${option}`)}
-            height={40}
-            width="100%"
-            bgColor="bg-ivory"
-            textColor="text-background"
-            borderColor="border-ivory"
-            borderWidth={1}
-        />
-    </View>
-);
+const OptionButtonWrapper = ({ option, selectedOption, correctOption, isAnswered, clickedOptions, handleOptionSelect }) => {
+    // Determine button state based on selection status
+    const isButtonDisabled = (isAnswered && option !== correctOption.option_text) || clickedOptions.includes(option);
+
+    return (
+        <View className="mb-4">
+            <OptionButton
+                title={option}
+                handlePress={() => handleOptionSelect(option)}
+                height={40}
+                width="100%"
+                // Change button color based on correctness
+                bgColor={
+                    option === selectedOption
+                        ? (option === correctOption.option_text ? "bg-amber" : "bg-rose") 
+                        : "bg-ivory"
+                }
+                textColor="text-background"
+                borderColor="border-ivory"
+                borderWidth={1}
+                // Disable button based on conditions
+                disabled={isButtonDisabled}
+            />
+        </View>
+    );
+};
 
 const NavigationButtons = () => (
     <View className="flex-row justify-between w-3/4">
