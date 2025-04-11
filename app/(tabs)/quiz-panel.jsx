@@ -4,7 +4,15 @@ import MyButton from '../../components/button';
 import { router } from "expo-router";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function App() {
+/**
+ * App component for the quiz panel.
+ * It displays a title, a resume button, and a grid of level buttons.
+ * The background includes a star cluster and a cloud cover image.
+ * The resume button navigates to the "/simple-rule" route.
+ * Each level button navigates to the "/level-up" route.
+ * @returns {JSX.Element} The App component.
+ */
+export default function QuizPanel() {
     return (
         <SafeAreaView className="flex-1 bg-violet">
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start', alignItems: 'center', paddingBottom: 100 }}>
@@ -40,7 +48,9 @@ export default function App() {
 
                 {/* Buttons grid */}
                 <View className="w-full items-center mt-10 px-4">
+                    {/* Placeholder for level buttons */}
                     <View className="w-3/4 justify-center gap-x-6 gap-y-6 flex-row flex-wrap">
+                        {/* You can replace these with actual level buttons/titles */}
                         {[...Array(7)].map((_, i) => (
                             <MyButton 
                                 key={i} 

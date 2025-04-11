@@ -3,6 +3,13 @@ import { Text, View, ImageBackground, Image } from 'react-native';
 import MyButton from '../components/button';
 import { router } from "expo-router"
 
+/**
+ * App component for the main screen.
+ * It serves as the entry point for the application.
+ * It displays the application title, a brief description, and buttons for signing in or creating an account.
+ * The app uses a background image and a logo to enhance the visual appeal.
+ * @returns {JSX.Element} The App component.
+ */
 export default function App(){
     return(
         // Flex box to contain the title, text, rocket and buttons. 

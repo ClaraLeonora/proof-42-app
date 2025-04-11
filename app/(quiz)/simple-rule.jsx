@@ -7,24 +7,29 @@ import OptionButton from '../../components/OptionButton';
 import { router } from "expo-router";
 
 export default function SimpleRule() {
+    // State variables for question data
     const [questionText, setQuestionText] = useState('');
     const [options, setOptions] = useState([]);
     const [imageUrl, setImageUrl] = useState(null);
 
+    // State variables for user interaction
     const [selectedOption, setSelectedOption] = useState(null);
     const [correctOption, setCorrectOption] = useState(null);
     const [isAnswered, setIsAnswered] = useState(false);
     const [clickedOptions, setClickedOptions] = useState([]);
 
+    // State variables for IDs
     const [questionId, setQuestionId] = useState(null);
     const [levelId, setLevelId] = useState(null);
     const [userId, setUserId] = useState(null);
 
+    // Fetch data on component mount
     useEffect(() => {
         fetchQuestionData();
         fetchUserId();
     }, []);
 
+    // Fetch the current user's ID
     const fetchUserId = async () => {
         const { data, error } = await supabase.auth.getUser();
         if (error || !data?.user) {
@@ -34,17 +39,18 @@ export default function SimpleRule() {
         }
     };
 
+    // Fetch question and related data
     const fetchQuestionData = async () => {
         try {
-            const levelId = await fetchLevelId(1);
+            const levelId = await fetchLevelId(1); // Fetch level ID for level 1
             setLevelId(levelId);
 
-            const questionData = await fetchQuestion(levelId);
+            const questionData = await fetchQuestion(levelId); // Fetch question data
             setQuestionText(questionData.question_text);
             setImageUrl(questionData.image_url);
             setQuestionId(questionData.id);
 
-            const optionsData = await fetchOptions(questionData.id);
+            const optionsData = await fetchOptions(questionData.id); // Fetch options for the question
             setOptions(optionsData.map(option => option.option_text));
             const correct = optionsData.find(option => option.is_correct);
             setCorrectOption(correct);
@@ -53,6 +59,7 @@ export default function SimpleRule() {
         }
     };
 
+    // Fetch level ID based on level number
     const fetchLevelId = async (levelNum) => {
         const { data, error } = await supabase
             .from('Levels')
@@ -63,6 +70,7 @@ export default function SimpleRule() {
         return data.id;
     };
 
+    // Fetch question details for a specific level
     const fetchQuestion = async (levelId) => {
         const { data, error } = await supabase
             .from('Questions')
@@ -73,6 +81,7 @@ export default function SimpleRule() {
         return data;
     };
 
+    // Fetch options for a specific question
     const fetchOptions = async (questionId) => {
         const { data, error } = await supabase
             .from('Question_Options')
@@ -82,6 +91,7 @@ export default function SimpleRule() {
         return data;
     };
 
+    // Handle option selection by the user
     const handleOptionSelect = async (option) => {
         if (!isAnswered) {
             setSelectedOption(option);
@@ -93,10 +103,9 @@ export default function SimpleRule() {
                 setClickedOptions((prev) => [...prev, option]);
             }
 
-            // Save performance to Supabase
+            // Save user performance to Supabase
             if (userId && questionId && levelId) {
                 try {
-                    // Check if the user has already answered this question
                     const { data: existingAnswer, error: checkError } = await supabase
                         .from('User_Answers')
                         .select('id')
@@ -106,7 +115,6 @@ export default function SimpleRule() {
 
                     if (checkError && checkError.code !== 'PGRST116') throw checkError;
 
-                    // If no previous answer, insert a new one
                     if (!existingAnswer) {
                         const { error: insertError } = await supabase.from('User_Answers').insert({
                             user_id: userId,
@@ -146,12 +154,14 @@ export default function SimpleRule() {
     );
 }
 
+// Header component for displaying the title
 const Header = ({ title }) => (
     <Text className="text-3xl font-bold bg-violet rounded-xl p-2 text-center text-ivory">
         {title}
     </Text>
 );
 
+// Question section component
 const QuestionSection = ({ questionText, imageUrl, options, selectedOption, correctOption, isAnswered, clickedOptions, handleOptionSelect }) => (
     <View className="w-3/4">
         <Text className="text-2xl font-bold bg-plum rounded-xl p-2 mb-3 text-center text-ivory">
@@ -181,6 +191,7 @@ const QuestionSection = ({ questionText, imageUrl, options, selectedOption, corr
     </View>
 );
 
+// Wrapper for option buttons
 const OptionButtonWrapper = ({ option, selectedOption, correctOption, isAnswered, clickedOptions, handleOptionSelect }) => {
     const isButtonDisabled = (isAnswered && option !== correctOption.option_text) || clickedOptions.includes(option);
 
@@ -205,6 +216,7 @@ const OptionButtonWrapper = ({ option, selectedOption, correctOption, isAnswered
     );
 };
 
+// Navigation buttons for moving between screens
 const NavigationButtons = () => (
     <View className="flex-row justify-between w-3/4">
         <MyButton

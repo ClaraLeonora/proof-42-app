@@ -6,12 +6,21 @@ import { Link, router } from "expo-router"
 import FormField from '../../components/FormField';
 import { useState } from 'react';
 
+/**
+ * EditProfile component for the edit profile screen of the app.
+ * It allows the user to change their email, password, and theme.
+ * The component is styled using Tailwind CSS classes.
+ * @returns {JSX.Element} The EditProfile component.
+ */
 export default function EditProfile(){
     const[form, setForm] = useState({
         email: '',
         password: '',
     });
 
+    // Function to handle the "Contact Support" button press.
+    // It opens the default email client with a pre-filled email address.
+    // This function uses the Linking API from React Native to open the email client.
     const handleContactSupport = () => {
         Linking.openURL('mailto:dgdimarc@ncsu.edu');
     };

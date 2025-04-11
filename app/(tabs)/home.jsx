@@ -4,12 +4,23 @@ import HomeButton from '../../components/home-button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from "expo-router";
 
-export default function App() {
+/**
+ * Home component for the main screen of the app.
+ * It displays a greeting, a progress bar, and buttons for navigation.
+ * The component is styled using Tailwind CSS classes.
+ * @returns {JSX.Element} The Home component.
+ */
+export default function Home() {
     return (
         <SafeAreaView className="flex-1 bg-background">
-            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'start', alignItems: 'center'}}>
-
-                {/* Cloud image at top of screen */}
+            <ScrollView 
+                contentContainerStyle={{
+                    flexGrow: 1,
+                    justifyContent: 'start',
+                    alignItems: 'center'
+                }}
+            >
+                {/* Cloud image at the top of the screen */}
                 <Image
                     source={require('../../assets/images/saturn-beacon.png')}
                     className="absolute w-full h-1/3 top-36"
@@ -17,7 +28,7 @@ export default function App() {
                     key="orion-connect"
                 />
 
-                {/* Progress bar - These are placeholders before supabase setup */}
+                {/* Progress bar section */}
                 <View className="w-full flex-row h-1/8 bg-plum justify-center items-center">
                     {/* Profile Image */}
                     <View className="bg-background rounded-full p-2 ml-4">
@@ -28,33 +39,30 @@ export default function App() {
                         />
                     </View>
 
+                    {/* Progress Text and Placeholder */}
                     <View className="flex-1 flex-col ml-4 mb-8">
-                        {/* Progress Text */}
                         <Text className="text-xl text-ivory font-nbold mt-10">
                             My Level Progress
                         </Text>
-                        {/* Progress Bar */}
                         <Text className="text-s text-amber font-nbold">
-                            Implemente me - progress bar
+                            Implement me - progress bar
                         </Text>
                     </View>
 
+                    {/* XP and Star Icon */}
                     <View className="flex-col justify-center items-center mr-12">
-                        {/* Star */}
                         <Image
                             source={require('../../assets/images/star.png')}
                             className="w-16 h-16 rounded-full"
                             resizeMode="contain"
                         />
-
-                        {/* Placeholder XP */}
-                        <Text className="text-base text-ivory font-nbold ">
+                        <Text className="text-base text-ivory font-nbold">
                             500 XP
                         </Text>
                     </View>
                 </View>
 
-                {/* Box of fun stuff */}
+                {/* Main content section */}
                 <View className="w-11/12 mt-64">
                     {/* Personal Greeting */}
                     <View className="flex-row">
@@ -71,16 +79,16 @@ export default function App() {
                         Don't Panic!
                     </Text>
 
-                    {/* Quiz box */}
+                    {/* Quiz Box */}
                     <View className="bg-indigo rounded-3xl flex-col mb-10">
-                        {/* First half of box */}
+                        {/* Quiz Box Header */}
                         <View className="justify-center flex-row bg-indigo rounded-3xl">
                             <Text className="text-center m-4 text-2xl text-ivory font-nbold">
                                 Practice proofs to discover the ultimate answer...
                             </Text>
                         </View>
 
-                        {/* Second half of box */}
+                        {/* Quiz Box Footer */}
                         <View className="justify-center items-center flex-row bg-plum rounded-3xl">
                             <View className="w-2/5 py-8">
                                 <HomeButton
@@ -94,7 +102,7 @@ export default function App() {
                         </View>
                     </View>
 
-                    {/* Profile box */}
+                    {/* Profile Box */}
                     <View className="bg-indigo rounded-3xl flex-row items-center justify-between px-4">
                         <Image
                             source={require('../../assets/images/rocket-tilt.png')}
@@ -109,7 +117,7 @@ export default function App() {
                         </View>
                     </View>
 
-                    {/* Let's blend our status bar. */}
+                    {/* Status Bar */}
                     <StatusBar style="auto" />
                 </View>
             </ScrollView>
