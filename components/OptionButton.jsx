@@ -8,7 +8,8 @@ const OptionButton = ({
     title, 
     handlePress,
     isLoading,
-    isAnswered,  // Added isAnswered to disable the button after selection
+    // Added isAnswered to disable the button after selection
+    isAnswered,  
     height = 62,
     width = '100%',
     bgColor = 'bg-plum',
@@ -28,12 +29,14 @@ const OptionButton = ({
             width,
             borderWidth: borderWidth, // Add the border width if provided
         }}
+        // Button cannot be used if loading or isAnswered. 
         disabled={isLoading || isAnswered} // Disable button if isLoading or isAnswered
     >
         <Text className={`text-xl font-nbold ${textColor}`}>
             {title}
         </Text>
 
+        {/* Show loading indicator if isLoading is true: see React Native Docs. */}
         {isLoading && (
             <ActivityIndicator
                 animating={isLoading}
